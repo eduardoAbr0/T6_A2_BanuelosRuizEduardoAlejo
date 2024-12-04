@@ -30,6 +30,10 @@ public class MainActivity extends AppCompatActivity {
             i = new Intent(this, ActivityAltas.class);
         }else if(v.getId() == R.id.btn_consultas){
             i = new Intent(this, ActivityConsultas.class);
+        }else if(v.getId() == R.id.btn_bajas){
+            i = new Intent(this, ActivityBajas.class);
+        }else if(v.getId() == R.id.btn_cambios){
+            i = new Intent(this, ActivityCambios.class);
         }
 
         startActivity(i);
