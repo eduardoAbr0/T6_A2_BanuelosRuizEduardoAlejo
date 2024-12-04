@@ -14,7 +14,7 @@ import entities.Alumno;
 
 public class ActivityAltas extends Activity {
 
-    EditText cajaNumControl, cajaNombre;
+    EditText cajaNumControl, cajaNombre, cajaEdad;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -23,6 +23,7 @@ public class ActivityAltas extends Activity {
 
         cajaNumControl = findViewById(R.id.cajaNumControl);
         cajaNombre = findViewById(R.id.cajaNombre);
+        cajaEdad = findViewById(R.id.cajaEdad);
 
     }//ON CREATE
 
@@ -33,7 +34,7 @@ public class ActivityAltas extends Activity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                bd.alumnoDAO().agregarAlumno(new Alumno("01","Sam",(byte)22));
+                bd.alumnoDAO().agregarAlumno(new Alumno(cajaNumControl.getText().toString(),cajaNombre.getText().toString(),(byte)Integer.parseInt(cajaEdad.getText().toString())));
                 Log.i("MSJ->", "Insertado Correctamente");
 
                 runOnUiThread(new Runnable() {

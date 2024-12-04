@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,11 +23,14 @@ public class ActivityConsultas extends Activity {
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     ArrayList<Alumno> datos = null;
+    EditText cajaNombre;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_consultas);
+
+        cajaNombre = findViewById(R.id.caja_Consultas);
 
         recyclerView = findViewById(R.id.lista_Alumnos);
         recyclerView.setHasFixedSize(true);
@@ -45,11 +49,31 @@ public class ActivityConsultas extends Activity {
                     @Override
                     public void run() {
                         adapter = new CustomAdapter(datos);
+                        recyclerView.setAdapter(adapter);
                     }
                 });
             }
         }).start();
 
+    }
+
+    public void consultaNombre(View v){
+        EscuelaBD bd = EscuelaBD.getAppDatabase(getBaseContext());
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                datos = (ArrayList<Alumno>) bd.alumnoDAO().buscarPorNombre(cajaNombre.getText().toString());
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter = new CustomAdapter(datos);
+                        recyclerView.setAdapter(adapter);
+                    }
+                });
+            }
+        }).start();
     }
 }//class
 
@@ -61,7 +85,7 @@ class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder>{
         private final TextView textView;
         public ViewHolder(View view){
             super(view);
-            textView = (TextView) view.findViewById(R.id.textView_recycle);
+            textView = view.findViewById(R.id.textView_recycle);
         }
 
         public TextView getTextView(){
@@ -83,7 +107,9 @@ class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull CustomAdapter.ViewHolder holder, int position) {
-        holder.getTextView().setText(localDatSet.get(position).toString());
+        Alumno alumno = localDatSet.get(position);
+
+        holder.getTextView().setText("Numero Control: "+ alumno.getNumControl() +"\nNombre: "+ alumno.getNombre()+ "\nEdad: "+ alumno.getEdad());
     }
 
     @Override
